@@ -3,23 +3,56 @@ const API_BASE = '/api';
 
 // Hero Background Image Slider
 let currentSlide = 0;
-const slides = document.querySelectorAll('.hero-slide');
+let heroSlides = [];
 const slideInterval = 5000; // Change image every 5 seconds
+let heroRotationInterval = null;
 
 function rotateBackgroundImages() {
+    if (heroSlides.length === 0) return;
+
     // Remove active class from current slide
-    slides[currentSlide].classList.remove('active');
+    heroSlides[currentSlide].classList.remove('active');
 
     // Move to next slide
-    currentSlide = (currentSlide + 1) % slides.length;
+    currentSlide = (currentSlide + 1) % heroSlides.length;
 
     // Add active class to new slide
-    slides[currentSlide].classList.add('active');
+    heroSlides[currentSlide].classList.add('active');
 }
 
-// Start rotation when page loads
-if (slides.length > 0) {
-    setInterval(rotateBackgroundImages, slideInterval);
+// Load hero images from gallery API
+async function loadHeroImages() {
+    const slider = document.getElementById('hero-slider');
+
+    try {
+        const response = await fetch(`${API_BASE}/gallery`);
+        const images = await response.json();
+
+        if (images.length === 0) {
+            // Fallback to a placeholder if no gallery images
+            slider.innerHTML = '<div class="hero-slide active" style="background-image: url(\'https://via.placeholder.com/1920x1080?text=Add+Gallery+Images\');"></div>';
+            return;
+        }
+
+        // Create slides from gallery images
+        slider.innerHTML = images.map((image, index) => {
+            const imageSrc = image.image.startsWith('uploads/') ? '/' + image.image : '/' + image.image;
+            return `<div class="hero-slide ${index === 0 ? 'active' : ''}" style="background-image: url('${encodeURI(imageSrc)}');"></div>`;
+        }).join('');
+
+        // Update heroSlides reference
+        heroSlides = document.querySelectorAll('.hero-slide');
+
+        // Start rotation if more than one image
+        if (heroSlides.length > 1 && !heroRotationInterval) {
+            heroRotationInterval = setInterval(rotateBackgroundImages, slideInterval);
+        }
+
+    } catch (error) {
+        console.error('Failed to load hero images:', error);
+        // Fallback on error
+        slider.innerHTML = '<div class="hero-slide active" style="background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);"></div>';
+    }
 }
 
 // Sticky Navbar on Scroll
@@ -433,6 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCart();
     loadProducts();
     loadGallery();
+    loadHeroImages();
 
     // Cart button click
     document.querySelector('.cart-btn').addEventListener('click', function(e) {
