@@ -1,0 +1,73 @@
+[
+  {
+    "id": "broodjie-grid",
+    "name": "The Broodjie Grid",
+    "tag": "Halftime Special",
+    "tagIcon": "fas fa-rugby-ball",
+    "description": "Perfect for those game-day broodjies! Compact design that delivers maximum flavor every time.",
+    "price": 470,
+    "image": "WhatsApp Image 2025-09-24 at 15.12.49.jpeg",
+    "specs": [
+      "250mm x 250mm",
+      "Sliding Handle",
+      "Dishwasher Safe"
+    ],
+    "badge": "BESTSELLER",
+    "badgeType": "bestseller",
+    "inStock": true,
+    "createdAt": "2025-09-24T00:00:00.000Z",
+    "updatedAt": "2026-01-05T08:02:08.487Z"
+  },
+  {
+    "id": "hunters-choice",
+    "name": "The Hunter's Choice",
+    "tag": "Multi-Purpose Master",
+    "tagIcon": "fas fa-crosshairs",
+    "description": "From bush to backyard - perfect for chops, ribs, strips, and even tacos! Crispy fat guaranteed.",
+    "price": 160,
+    "image": "WhatsApp Image 2025-09-24 at 15.12.50.jpeg",
+    "specs": [
+      "Multi-Purpose",
+      "Fat Crisper Design",
+      "Taco Ready"
+    ],
+    "badge": "BEST VALUE",
+    "badgeType": "best-value",
+    "inStock": true,
+    "createdAt": "2025-09-24T00:00:00.000Z",
+    "updatedAt": "2026-01-05T08:02:07.743Z"
+  },
+  {
+    "id": "boma-king",
+    "name": "The Boma King",
+    "tag": "Full Team Feast",
+    "tagIcon": "fas fa-campfire",
+    "description": "For the serious braai master. Feed the whole team around the boma with this champion-sized grid!",
+    "price": 860,
+    "image": "WhatsApp Image 2025-09-24 at 15.12.51.jpeg",
+    "specs": [
+      "500mm x 400mm",
+      "Sliding Handle",
+      "Extra Capacity"
+    ],
+    "badge": "PREMIUM",
+    "badgeType": "premium",
+    "inStock": true,
+    "createdAt": "2025-09-24T00:00:00.000Z",
+    "updatedAt": "2026-01-05T08:02:06.895Z"
+  },
+  {
+    "id": "780ce8a2-4551-488f-bedf-eb4b4e95a034",
+    "name": "xzsrtfhhfsxgsh",
+    "tag": "",
+    "tagIcon": "fas fa-star",
+    "description": "zdxcvfbbzdfbv",
+    "price": 12,
+    "image": "",
+    "specs": [],
+    "badge": "",
+    "badgeType": "bestseller",
+    "inStock": true,
+    "createdAt": "2026-01-06T12:13:05.643Z"
+  }
+]

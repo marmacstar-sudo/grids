@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Braai Grids SA - Forged for the Field. Built for the Braai.</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero" id="hero">
+        <!-- Rotating Background Images -->
+        <div class="hero-background-slider">
+            <!-- Rugby Player -->
+            <!-- <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=1920&q=80');"></div> -->
+            <!-- Meat on Braai/Grill -->
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1920&q=80');"></div>
+            <!-- Butcher/Meat Shop -->
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=1920&q=80');"></div>
+            <!-- Cricket Player -->
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1920&q=80');"></div>
+            <!-- MMA/Fighting (UFC style) -->
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1920&q=80');"></div>
+        </div>
+        <div class="hero-overlay"></div>
+        <nav class="navbar" id="navbar">
+            <div class="container">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>BRAAI GRIDS SA</h1>
+                        <p class="tagline">Springbok Strong. Bush Ready.</p>
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#hero" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#features" class="nav-link"><i class="fas fa-star"></i> Features</a></li>
+                    <li><a href="#products" class="nav-link"><i class="fas fa-shopping-bag"></i> Products</a></li>
+                    <li><a href="#gallery" class="nav-link"><i class="fas fa-images"></i> Gallery</a></li>
+                    <li><a href="#contact" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="#cart" class="cart-btn">
+                        <i class="fas fa-shopping-cart"></i> Cart <span id="cart-count" class="cart-count">0</span>
+                    </a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="hero-content">
+            <div class="hero-badge">🇿🇦 Proudly South African</div>
+            <h2 class="hero-title">FORGED FOR<br>THE FIELD.<br>BUILT FOR THE BRAAI.</h2>
+            <p class="hero-subtitle">Premium Stainless Steel Braai Grids</p>
+            <p class="hero-description">From rugby fields to the bushveld | Championship quality meets outdoor heritage</p>
+            <div class="hero-cta-group">
+                <a href="#products" class="cta-button primary">
+                    <i class="fas fa-shopping-bag"></i> Shop Now
+                </a>
+                <a href="#story" class="cta-button secondary">
+                    <i class="fas fa-play-circle"></i> Our Story
+                </a>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+        <div class="rugby-lines"></div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">WHY CHOOSE OUR GRIDS?</h2>
+            <p class="section-subtitle">Built for champions. Tested in the wild.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-trophy"></i></div>
+                    <h3>Springbok Strong</h3>
+                    <p>Championship-quality 304 stainless steel built to outlast any braai legacy</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-mountain"></i></div>
+                    <h3>Bush-Ready</h3>
+                    <p>Portable and durable for hunting lodges, camping trips, and outdoor adventures</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-droplet"></i></div>
+                    <h3>Dishwasher Safe</h3>
+                    <p>Easy cleanup after the game. Just throw it in and relax with your mates!</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-fire"></i></div>
+                    <h3>Sliding Handles</h3>
+                    <p>Flip with confidence - adjustable handles give you perfect control every time</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">OUR LINEUP</h2>
+            <p class="section-subtitle">Premium stainless steel. South African craftsmanship.</p>
+            <div class="products-grid" id="products-container">
+                <!-- Products loaded dynamically from API -->
+                <div class="loading-placeholder">Loading products...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">SEE THEM IN ACTION</h2>
+            <p class="section-subtitle">Real grids. Real braais. Real results.</p>
+            <div class="gallery-grid" id="gallery-container">
+                <!-- Gallery loaded dynamically from API -->
+                <div class="loading-placeholder">Loading gallery...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">GET IN TOUCH</h2>
+            <p class="section-subtitle">Questions? Custom orders? We're here to help.</p>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Ready to Upgrade Your Braai Game?</h3>
+                    <p>Contact us for orders, custom sizes, or any questions!</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <span class="icon">📱</span>
+                            <div>
+                                <strong>WhatsApp</strong>
+                                <p>Message us for quick orders</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="icon">📧</span>
+                            <div>
+                                <strong>Email</strong>
+                                <p>info@braaigrids.co.za</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="icon">🇿🇦</span>
+                            <div>
+                                <strong>Proudly South African</strong>
+                                <p>Shipping nationwide</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" onsubmit="handleSubmit(event)">
+                        <input type="text" placeholder="Your Name" required>
+                        <input type="email" placeholder="Your Email" required>
+                        <input type="tel" placeholder="Phone Number" required>
+                        <textarea placeholder="Your Message" rows="4" required></textarea>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCart()">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                <h3>Total: <span id="cart-total-amount">R 0</span></h3>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Checkout via WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div id="gallery-modal" class="modal">
+        <div class="gallery-modal-content">
+            <span class="close" onclick="closeGallery()">&times;</span>
+            <img id="gallery-modal-img" src="" alt="Gallery Image">
+            <div class="gallery-nav">
+                <button onclick="prevImage()">❮ Previous</button>
+                <button onclick="nextImage()">Next ❯</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🏉 BRAAI GRIDS SA</h3>
+                    <p>Premium stainless steel braai accessories for the true South African spirit.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow the Game</h4>
+                    <p>Stay updated with new products and special offers!</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Braai Grids SA. Built Springbok Strong. 🇿🇦</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

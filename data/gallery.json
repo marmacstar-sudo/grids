@@ -1,0 +1,26 @@
+[
+  {
+    "id": "gallery-1",
+    "image": "WhatsApp Image 2025-09-24 at 15.12.52.jpeg",
+    "alt": "Grid in dishwasher",
+    "order": 0
+  },
+  {
+    "id": "gallery-2",
+    "image": "WhatsApp Image 2025-09-24 at 15.12.49 (1).jpeg",
+    "alt": "Braai Grid",
+    "order": 1
+  },
+  {
+    "id": "gallery-3",
+    "image": "WhatsApp Image 2025-09-24 at 15.12.49 (2).jpeg",
+    "alt": "Braai Grid",
+    "order": 2
+  },
+  {
+    "id": "gallery-4",
+    "image": "WhatsApp Image 2025-09-24 at 15.12.49 (3).jpeg",
+    "alt": "Braai Grid",
+    "order": 3
+  }
+]
