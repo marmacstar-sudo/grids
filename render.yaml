@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: braai-grids-sa
+    name: goatgrids
     runtime: node
     plan: starter
     buildCommand: npm install && mkdir -p /opt/render/project/src/persistent/data /opt/render/project/src/persistent/uploads && cp -n data/*.json /opt/render/project/src/persistent/data/ 2>/dev/null || true
