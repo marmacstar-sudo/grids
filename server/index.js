@@ -29,17 +29,49 @@ app.use('/uploads', express.static(UPLOADS_PATH));
 
 // Initialize default admin user if not exists
 const usersPath = path.join(DATA_PATH, 'users.json');
-const initializeAdmin = async () => {
+const productsPath = path.join(DATA_PATH, 'products.json');
+const galleryPath = path.join(DATA_PATH, 'gallery.json');
+const ordersPath = path.join(DATA_PATH, 'orders.json');
+
+const initializeData = async () => {
   try {
-    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
-    if (users.length === 1 && users[0].password === '$2b$10$YourHashedPasswordHere') {
+    // Initialize users.json with admin user
+    if (!fs.existsSync(usersPath)) {
       const hashedPassword = await bcrypt.hash('admin123', 10);
-      users[0].password = hashedPassword;
+      const users = [{
+        id: 'admin-1',
+        username: 'admin',
+        password: hashedPassword,
+        createdAt: new Date().toISOString()
+      }];
       fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
-      console.log('Default admin password initialized');
+      console.log('Created users.json with default admin');
+    } else {
+      // Check if password needs to be hashed
+      const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+      if (users.length > 0 && users[0].password === '$2b$10$YourHashedPasswordHere') {
+        const hashedPassword = await bcrypt.hash('admin123', 10);
+        users[0].password = hashedPassword;
+        fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
+        console.log('Default admin password initialized');
+      }
+    }
+
+    // Initialize other data files if they don't exist
+    if (!fs.existsSync(productsPath)) {
+      fs.writeFileSync(productsPath, '[]');
+      console.log('Created empty products.json');
+    }
+    if (!fs.existsSync(galleryPath)) {
+      fs.writeFileSync(galleryPath, '[]');
+      console.log('Created empty gallery.json');
+    }
+    if (!fs.existsSync(ordersPath)) {
+      fs.writeFileSync(ordersPath, '[]');
+      console.log('Created empty orders.json');
     }
   } catch (error) {
-    console.error('Error initializing admin:', error);
+    console.error('Error initializing data:', error);
   }
 };
 
@@ -64,7 +96,7 @@ app.get('/admin/*', (req, res) => {
 });
 
 // Initialize and start server
-initializeAdmin().then(() => {
+initializeData().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Admin panel: http://localhost:${PORT}/admin`);
