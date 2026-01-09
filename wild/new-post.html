@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Your Adventure - In The Wild - GOAT Grids</title>
+    <link rel="stylesheet" href="wild.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>GOAT GRIDS</h1>
+                    <p class="tagline">In The Wild</p>
+                </div>
+            </a>
+
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Store</a></li>
+                <li><a href="/wild/" class="nav-link"><i class="fas fa-compass"></i> Explore</a></li>
+                <li id="auth-section">
+                    <a href="/wild/login.html" class="auth-btn"><i class="fas fa-user"></i> Sign In</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="container">
+                <h1>SHARE YOUR ADVENTURE</h1>
+                <p>Show the community where you've taken your GOAT Grid</p>
+            </div>
+        </div>
+
+        <!-- New Post Form -->
+        <section class="new-post-section">
+            <div class="container">
+                <div class="new-post-card">
+                    <div class="error-message"></div>
+                    <div class="success-message"></div>
+
+                    <form id="new-post-form">
+                        <!-- Photo Upload -->
+                        <div class="form-group">
+                            <label>Photos (up to 5)</label>
+                            <div class="photo-previews" id="photo-previews"></div>
+                            <div class="photo-upload-area" id="photo-upload-area">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag photos here or <span>click to browse</span></p>
+                                <p style="font-size: 0.85rem; margin-top: 10px;">Max 5MB per photo</p>
+                            </div>
+                            <input type="file" id="photo-input" accept="image/*" multiple style="display: none;">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description">Tell us about your adventure</label>
+                            <textarea id="description" rows="4" placeholder="Where did you go? What did you braai? Share the story!" required></textarea>
+                        </div>
+
+                        <!-- Location Picker -->
+                        <div class="form-group">
+                            <label>Location</label>
+                            <div class="location-picker-container">
+                                <div class="location-search">
+                                    <input type="text" id="location-search-input" placeholder="Search for a location...">
+                                    <button type="button" id="location-search-btn"><i class="fas fa-search"></i></button>
+                                </div>
+                                <div class="location-picker-map" id="location-picker-map"></div>
+                                <div class="selected-location" id="selected-location" style="display: none;">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Click on the map to select a location</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Share Adventure</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 GOAT Grids. <a href="/">Back to Store</a></p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="wild.js"></script>
+</body>
+</html>

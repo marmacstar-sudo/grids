@@ -1,0 +1,34 @@
+[
+  {
+    "id": "f035a026-cdde-48b6-8b61-454f02104e73",
+    "memberId": "09aaca32-8247-4a7d-b9ff-36f3fc7f209b",
+    "description": "Braai by die baai ",
+    "photos": [
+      "uploads/travels/travel-cdac4e36-feda-48f3-9b11-b598e1996188.jpg"
+    ],
+    "location": {
+      "lat": -34.0956789,
+      "lng": 18.466369,
+      "placeName": "Cape Town Ward 64",
+      "formattedAddress": "Main Road, Cape Town Ward 64, City of Cape Town, Western Cape, 7845, South Africa"
+    },
+    "createdAt": "2026-01-09T18:06:44.615Z",
+    "updatedAt": "2026-01-09T18:06:44.615Z"
+  },
+  {
+    "id": "dba296fc-0c64-41b9-a0d5-6e573074faf1",
+    "memberId": "09aaca32-8247-4a7d-b9ff-36f3fc7f209b",
+    "description": "Braai n kraai",
+    "photos": [
+      "uploads/travels/travel-af1bfeb4-5676-44d4-8836-b062808de55f.jpg"
+    ],
+    "location": {
+      "lat": -33.8559411,
+      "lng": 25.2857822,
+      "placeName": "Nelson Mandela Bay Ward 40",
+      "formattedAddress": "Elands River Road, Nelson Mandela Bay Ward 40, Nelson Mandela Bay Metropolitan Municipality, Eastern Cape, South Africa"
+    },
+    "createdAt": "2026-01-09T18:09:55.316Z",
+    "updatedAt": "2026-01-09T18:09:55.316Z"
+  }
+]

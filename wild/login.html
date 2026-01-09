@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - In The Wild - GOAT Grids</title>
+    <link rel="stylesheet" href="wild.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>GOAT GRIDS</h1>
+                    <p class="tagline">In The Wild</p>
+                </div>
+            </a>
+
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Store</a></li>
+                <li><a href="/wild/" class="nav-link"><i class="fas fa-compass"></i> Explore</a></li>
+                <li id="auth-section">
+                    <a href="/wild/login.html" class="auth-btn"><i class="fas fa-user"></i> Sign In</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="auth-section">
+            <div class="auth-card">
+                <h2>WELCOME BACK</h2>
+                <p class="subtitle">Sign in to share your adventures</p>
+
+                <div class="error-message"></div>
+                <div class="success-message"></div>
+
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Your password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </form>
+
+                <p class="auth-link">
+                    Don't have an account? <a href="/wild/register.html">Join The Wild</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 GOAT Grids. <a href="/">Back to Store</a></p>
+        </div>
+    </footer>
+
+    <script src="wild.js"></script>
+</body>
+</html>

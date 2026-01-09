@@ -32,6 +32,8 @@ const usersPath = path.join(DATA_PATH, 'users.json');
 const productsPath = path.join(DATA_PATH, 'products.json');
 const galleryPath = path.join(DATA_PATH, 'gallery.json');
 const ordersPath = path.join(DATA_PATH, 'orders.json');
+const membersPath = path.join(DATA_PATH, 'members.json');
+const travelPostsPath = path.join(DATA_PATH, 'travel-posts.json');
 
 const initializeData = async () => {
   try {
@@ -70,6 +72,21 @@ const initializeData = async () => {
       fs.writeFileSync(ordersPath, '[]');
       console.log('Created empty orders.json');
     }
+    if (!fs.existsSync(membersPath)) {
+      fs.writeFileSync(membersPath, '[]');
+      console.log('Created empty members.json');
+    }
+    if (!fs.existsSync(travelPostsPath)) {
+      fs.writeFileSync(travelPostsPath, '[]');
+      console.log('Created empty travel-posts.json');
+    }
+
+    // Ensure travels upload directory exists
+    const travelsUploadPath = path.join(UPLOADS_PATH, 'travels');
+    if (!fs.existsSync(travelsUploadPath)) {
+      fs.mkdirSync(travelsUploadPath, { recursive: true });
+      console.log('Created travels upload directory');
+    }
   } catch (error) {
     console.error('Error initializing data:', error);
   }
@@ -81,12 +98,16 @@ const productsRoutes = require('./routes/products');
 const galleryRoutes = require('./routes/gallery');
 const ordersRoutes = require('./routes/orders');
 const webhooksRoutes = require('./routes/webhooks');
+const memberAuthRoutes = require('./routes/memberAuth');
+const travelPostsRoutes = require('./routes/travelPosts');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/webhooks', webhooksRoutes);
+app.use('/api/members', memberAuthRoutes);
+app.use('/api/travels', travelPostsRoutes);
 
 // Serve admin page
 app.get('/admin', (req, res) => {
@@ -97,10 +118,28 @@ app.get('/admin/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'admin', 'index.html'));
 });
 
+// Serve In The Wild pages
+app.get('/wild', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'wild', 'index.html'));
+});
+
+app.get('/wild/*', (req, res) => {
+  const requestedFile = req.params[0];
+  const filePath = path.join(__dirname, '..', 'wild', requestedFile);
+
+  // Check if file exists, otherwise serve index.html
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.sendFile(path.join(__dirname, '..', 'wild', 'index.html'));
+  }
+});
+
 // Initialize and start server
 initializeData().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Admin panel: http://localhost:${PORT}/admin`);
+    console.log(`In The Wild: http://localhost:${PORT}/wild`);
   });
 });

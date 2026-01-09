@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - In The Wild - GOAT Grids</title>
+    <link rel="stylesheet" href="wild.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>GOAT GRIDS</h1>
+                    <p class="tagline">In The Wild</p>
+                </div>
+            </a>
+
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Store</a></li>
+                <li><a href="/wild/" class="nav-link"><i class="fas fa-compass"></i> Explore</a></li>
+                <li id="auth-section">
+                    <a href="/wild/login.html" class="auth-btn"><i class="fas fa-user"></i> Sign In</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="container">
+                <div class="profile-info">
+                    <div class="profile-avatar" id="profile-avatar">
+                        ?
+                    </div>
+                    <div class="profile-details">
+                        <h1 id="profile-name">Loading...</h1>
+                        <p class="profile-bio" id="profile-bio">Loading profile...</p>
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <div class="stat-value" id="posts-count">0</div>
+                                <div class="stat-label">Adventures</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-actions" id="profile-actions">
+                        <!-- Edit button shown for own profile -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Map -->
+        <section class="profile-map-section">
+            <div class="container">
+                <h2>ADVENTURE MAP</h2>
+                <div class="map-container">
+                    <div id="profile-map"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Posts -->
+        <section class="profile-posts-section">
+            <div class="container">
+                <h2 style="font-size: 1.8rem; color: var(--springbok-green); margin-bottom: 30px;">ADVENTURES</h2>
+                <div class="posts-grid" id="profile-posts">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 GOAT Grids. <a href="/">Back to Store</a></p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="wild.js"></script>
+</body>
+</html>
