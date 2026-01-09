@@ -242,7 +242,7 @@ async function loadProducts() {
         container.innerHTML = products.map(product => `
             <div class="item-card">
                 <img src="/${product.image}" alt="${product.name}" class="item-card-image"
-                     onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                     onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 x=%22150%22 y=%22100%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                 <div class="item-card-body">
                     <h4 class="item-card-title">${product.name}</h4>
                     <p class="item-card-price">R ${product.price}</p>
@@ -416,7 +416,7 @@ async function loadGallery() {
         container.innerHTML = gallery.map(image => `
             <div class="gallery-card">
                 <img src="/${image.image}" alt="${image.alt}"
-                     onerror="this.src='https://via.placeholder.com/200x200?text=No+Image'">
+                     onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 x=%22100%22 y=%22100%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                 <div class="gallery-card-overlay">
                     <button class="delete-btn" onclick="deleteGalleryImage('${image.id}')">
                         <i class="fas fa-trash"></i> Delete

@@ -30,7 +30,7 @@ async function loadHeroImages() {
 
         if (images.length === 0) {
             // Fallback to a placeholder if no gallery images
-            slider.innerHTML = '<div class="hero-slide active" style="background-image: url(\'https://via.placeholder.com/1920x1080?text=Add+Gallery+Images\');"></div>';
+            slider.innerHTML = '<div class="hero-slide active" style="background-color: #333;"></div>';
             return;
         }
 
@@ -381,7 +381,7 @@ async function loadProducts() {
                 <div class="product-card ${!product.inStock ? 'out-of-stock' : ''}" data-product="${product.id}">
                     ${product.badge ? `<div class="product-badge ${badgeClass}">${product.badge}</div>` : ''}
                     <div class="product-image">
-                        <img src="${encodeURI(imageSrc)}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                        <img src="${encodeURI(imageSrc)}" alt="${product.name}" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22300%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 x=%22150%22 y=%22100%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                         ${!product.inStock ? '<div class="out-of-stock-overlay">OUT OF STOCK</div>' : ''}
                     </div>
                     <div class="product-info">
@@ -430,7 +430,7 @@ async function loadGallery() {
             const imageSrc = image.image.startsWith('uploads/') ? '/' + image.image : '/' + image.image;
             return `
                 <div class="gallery-item" onclick="openGallery(${index})">
-                    <img src="${encodeURI(imageSrc)}" alt="${image.alt || 'Gallery image'}" onerror="this.src='https://via.placeholder.com/250x250?text=No+Image'">
+                    <img src="${encodeURI(imageSrc)}" alt="${image.alt || 'Gallery image'}" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22250%22 height=%22250%22%3E%3Crect fill=%22%23ddd%22 width=%22250%22 height=%22250%22/%3E%3Ctext fill=%22%23999%22 x=%22125%22 y=%22125%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                 </div>
             `;
         }).join('');
