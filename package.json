@@ -1,7 +1,7 @@
 {
-  "name": "braai-grids-sa",
+  "name": "goat-grids",
   "version": "1.0.0",
-  "description": "Braai Grids SA - Premium Stainless Steel Braai Grids",
+  "description": "GOAT Grids - Premium Stainless Steel Braai Grids",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",

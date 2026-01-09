@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'braai-grids-sa-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'goat-grids-secret-key-change-in-production';
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
