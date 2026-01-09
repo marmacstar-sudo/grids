@@ -197,6 +197,7 @@ router.post('/:id/payment-link', async (req, res) => {
         },
         successUrl: `${baseUrl}/order-confirmation.html?orderId=${order.id}&status=success`,
         cancelUrl: `${baseUrl}/order-confirmation.html?orderId=${order.id}&status=cancelled`,
+        failureUrl: `${baseUrl}/order-confirmation.html?orderId=${order.id}&status=failed`,
       }),
     });
 

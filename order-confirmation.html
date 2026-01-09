@@ -234,11 +234,17 @@
 
                 // Determine display status
                 const isCancelled = urlStatus === 'cancelled';
+                const isFailed = urlStatus === 'failed';
                 const isPaid = order.paymentStatus === 'paid';
 
                 let statusIcon, statusClass, title, subtitle;
 
-                if (isCancelled) {
+                if (isFailed) {
+                    statusIcon = 'times';
+                    statusClass = 'cancelled';
+                    title = 'Payment Failed';
+                    subtitle = 'Your payment could not be processed. Please try again or use a different payment method.';
+                } else if (isCancelled) {
                     statusIcon = 'times';
                     statusClass = 'cancelled';
                     title = 'Payment Cancelled';
