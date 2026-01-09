@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - GOAT Grids</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .confirmation-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .status-icon.success {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .status-icon.pending {
+            background: #fff3cd;
+            color: #ffc107;
+        }
+
+        .status-icon.cancelled {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        .confirmation-card h1 {
+            color: #1a1a2e;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-card .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .order-number {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .order-number label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .order-number span {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .order-items {
+            text-align: left;
+            margin: 20px 0;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .order-items h3 {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-top: 2px solid #1a1a2e;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .payment-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .payment-status.paid {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .payment-status.unpaid {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #00A859 0%, #008847 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 168, 89, 0.4);
+        }
+
+        .loading {
+            color: #666;
+            padding: 40px;
+        }
+
+        .error-message {
+            color: #dc3545;
+            padding: 20px;
+        }
+
+        .logo-small {
+            margin-bottom: 30px;
+        }
+
+        .logo-small h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo-small i {
+            color: #00A859;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-page">
+        <div class="logo-small">
+            <h2><i class="fas fa-fire"></i> GOAT GRIDS</h2>
+        </div>
+
+        <div class="confirmation-card" id="confirmation-card">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Loading order details...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        async function loadOrderDetails() {
+            const card = document.getElementById('confirmation-card');
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('orderId');
+            const urlStatus = params.get('status');
+
+            if (!orderId) {
+                card.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle fa-3x"></i>
+                        <h1>Order Not Found</h1>
+                        <p>No order ID provided.</p>
+                        <a href="/" class="back-btn">Return to Shop</a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/orders/${orderId}/status`);
+
+                if (!response.ok) {
+                    throw new Error('Order not found');
+                }
+
+                const order = await response.json();
+
+                // Determine display status
+                const isCancelled = urlStatus === 'cancelled';
+                const isPaid = order.paymentStatus === 'paid';
+
+                let statusIcon, statusClass, title, subtitle;
+
+                if (isCancelled) {
+                    statusIcon = 'times';
+                    statusClass = 'cancelled';
+                    title = 'Payment Cancelled';
+                    subtitle = 'Your payment was cancelled. Your order has not been processed.';
+                } else if (isPaid) {
+                    statusIcon = 'check';
+                    statusClass = 'success';
+                    title = 'Payment Successful!';
+                    subtitle = 'Thank you for your order. We\'ll be in touch soon.';
+                } else {
+                    statusIcon = 'clock';
+                    statusClass = 'pending';
+                    title = 'Payment Processing';
+                    subtitle = 'Your payment is being processed. This page will update automatically.';
+                    // Poll for status updates if pending
+                    setTimeout(() => loadOrderDetails(), 5000);
+                }
+
+                const itemsHtml = order.items.map(item => `
+                    <div class="order-item">
+                        <span>${item.name}</span>
+                        <span>R ${item.price}</span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="status-icon ${statusClass}">
+                        <i class="fas fa-${statusIcon}"></i>
+                    </div>
+                    <h1>${title}</h1>
+                    <p class="subtitle">${subtitle}</p>
+
+                    <div class="order-number">
+                        <label>Order Number</label>
+                        <span>${order.orderNumber}</span>
+                    </div>
+
+                    <div class="order-items">
+                        <h3>Order Summary</h3>
+                        ${itemsHtml}
+                        <div class="order-total">
+                            <span>Total</span>
+                            <span>R ${order.total}</span>
+                        </div>
+                    </div>
+
+                    <span class="payment-status ${isPaid ? 'paid' : 'unpaid'}">
+                        ${isPaid ? 'Paid' : 'Awaiting Payment'}
+                    </span>
+
+                    <br>
+                    <a href="/" class="back-btn">Continue Shopping</a>
+                `;
+
+                // Clear cart on successful payment
+                if (isPaid || urlStatus === 'success') {
+                    localStorage.removeItem('braaiCart');
+                }
+
+            } catch (error) {
+                console.error('Error loading order:', error);
+                card.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle fa-3x" style="color: #dc3545; margin-bottom: 20px;"></i>
+                        <h1>Order Not Found</h1>
+                        <p>We couldn't find this order. Please contact us if you believe this is an error.</p>
+                        <a href="/" class="back-btn">Return to Shop</a>
+                    </div>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadOrderDetails);
+    </script>
+</body>
+</html>

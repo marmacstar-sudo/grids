@@ -59,11 +59,13 @@ router.post('/', (req, res) => {
       orderNumber: `BG-${Date.now().toString(36).toUpperCase()}`,
       items,
       total: parseFloat(total) || items.reduce((sum, item) => sum + item.price, 0),
-      customerName: customerName || 'WhatsApp Customer',
+      customerName: customerName || 'Customer',
       customerEmail: customerEmail || '',
       customerPhone: customerPhone || '',
       notes: notes || '',
       status: 'pending',
+      paymentStatus: 'unpaid',
+      yocoCheckoutId: null,
       createdAt: new Date().toISOString()
     };
 
@@ -122,6 +124,96 @@ router.delete('/:id', authenticateToken, (req, res) => {
   } catch (error) {
     console.error('Delete order error:', error);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get order status (public - for confirmation page)
+router.get('/:id/status', (req, res) => {
+  try {
+    const orders = getOrders();
+    const order = orders.find(o => o.id === req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    res.json({
+      id: order.id,
+      orderNumber: order.orderNumber,
+      items: order.items,
+      total: order.total,
+      status: order.status,
+      paymentStatus: order.paymentStatus || 'unpaid',
+      createdAt: order.createdAt
+    });
+  } catch (error) {
+    console.error('Get order status error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Create payment link (public - for checkout)
+router.post('/:id/payment-link', async (req, res) => {
+  try {
+    const yocoSecretKey = process.env.YOCO_SECRET_KEY;
+
+    if (!yocoSecretKey) {
+      return res.status(500).json({ error: 'Payment gateway not configured' });
+    }
+
+    const orders = getOrders();
+    const index = orders.findIndex(o => o.id === req.params.id);
+
+    if (index === -1) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    const order = orders[index];
+
+    if (order.paymentStatus === 'paid') {
+      return res.status(400).json({ error: 'Order already paid' });
+    }
+
+    // Amount in cents
+    const amountInCents = Math.round(order.total * 100);
+
+    // Get the base URL for redirects
+    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
+    const response = await fetch('https://payments.yoco.com/api/checkouts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${yocoSecretKey}`,
+      },
+      body: JSON.stringify({
+        amount: amountInCents,
+        currency: 'ZAR',
+        metadata: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+        },
+        successUrl: `${baseUrl}/order-confirmation.html?orderId=${order.id}&status=success`,
+        cancelUrl: `${baseUrl}/order-confirmation.html?orderId=${order.id}&status=cancelled`,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Yoco API error:', error);
+      return res.status(500).json({ error: 'Failed to create payment link' });
+    }
+
+    const checkout = await response.json();
+
+    // Store the checkout ID on the order
+    orders[index].yocoCheckoutId = checkout.id;
+    saveOrders(orders);
+
+    res.json({ paymentUrl: checkout.redirectUrl });
+  } catch (error) {
+    console.error('Create payment link error:', error);
+    res.status(500).json({ error: 'Failed to create payment link' });
   }
 });
 

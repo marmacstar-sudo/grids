@@ -80,11 +80,13 @@ const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');
 const galleryRoutes = require('./routes/gallery');
 const ordersRoutes = require('./routes/orders');
+const webhooksRoutes = require('./routes/webhooks');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/webhooks', webhooksRoutes);
 
 // Serve admin page
 app.get('/admin', (req, res) => {

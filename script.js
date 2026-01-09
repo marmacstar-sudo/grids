@@ -257,7 +257,7 @@ function closeCart() {
     document.getElementById('cart-modal').style.display = 'none';
 }
 
-// Checkout via WhatsApp
+// Checkout via Yoco Payment
 async function checkout() {
     if (cart.length === 0) {
         alert('Your cart is empty!');
@@ -265,33 +265,53 @@ async function checkout() {
     }
 
     const total = cart.reduce((sum, item) => sum + item.price, 0);
+    const checkoutBtn = document.querySelector('.checkout-btn');
 
-    // Save order to database
+    // Update button to show loading state
+    const originalText = checkoutBtn.textContent;
+    checkoutBtn.textContent = 'Processing...';
+    checkoutBtn.disabled = true;
+
     try {
-        await fetch(`${API_BASE}/orders`, {
+        // 1. Create order
+        const orderResponse = await fetch(`${API_BASE}/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 items: cart,
                 total: total,
-                customerName: 'WhatsApp Customer'
+                customerName: 'Customer'
             })
         });
+
+        if (!orderResponse.ok) {
+            throw new Error('Failed to create order');
+        }
+
+        const order = await orderResponse.json();
+
+        // 2. Get payment link
+        const paymentResponse = await fetch(`${API_BASE}/orders/${order.id}/payment-link`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!paymentResponse.ok) {
+            const error = await paymentResponse.json();
+            throw new Error(error.error || 'Failed to create payment link');
+        }
+
+        const { paymentUrl } = await paymentResponse.json();
+
+        // 3. Redirect to Yoco payment page
+        window.location.href = paymentUrl;
+
     } catch (error) {
-        console.error('Failed to save order:', error);
-        // Continue with WhatsApp even if order save fails
+        console.error('Checkout error:', error);
+        alert('Failed to process checkout. Please try again.');
+        checkoutBtn.textContent = originalText;
+        checkoutBtn.disabled = false;
     }
-
-    let message = "Hi! I'd like to order the following braai grids:\n\n";
-
-    cart.forEach((item, index) => {
-        message += `${index + 1}. ${item.name} - R${item.price}\n`;
-    });
-
-    message += `\nTotal: R${total}`;
-
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
 }
 
 // Save Cart to LocalStorage
