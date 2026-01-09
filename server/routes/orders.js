@@ -178,7 +178,9 @@ router.post('/:id/payment-link', async (req, res) => {
     const amountInCents = Math.round(order.total * 100);
 
     // Get the base URL for redirects
-    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+    // Use X-Forwarded-Proto header when behind a proxy (like Render)
+    const protocol = req.get('X-Forwarded-Proto') || req.protocol;
+    const baseUrl = process.env.BASE_URL || `${protocol}://${req.get('host')}`;
 
     const response = await fetch('https://payments.yoco.com/api/checkouts', {
       method: 'POST',
