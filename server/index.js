@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -100,6 +102,7 @@ const ordersRoutes = require('./routes/orders');
 const webhooksRoutes = require('./routes/webhooks');
 const memberAuthRoutes = require('./routes/memberAuth');
 const travelPostsRoutes = require('./routes/travelPosts');
+const shippingRoutes = require('./routes/shipping');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
@@ -108,6 +111,7 @@ app.use('/api/orders', ordersRoutes);
 app.use('/api/webhooks', webhooksRoutes);
 app.use('/api/members', memberAuthRoutes);
 app.use('/api/travels', travelPostsRoutes);
+app.use('/api/shipping', shippingRoutes);
 
 // Serve admin page
 app.get('/admin', (req, res) => {

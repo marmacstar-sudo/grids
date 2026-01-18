@@ -48,20 +48,42 @@ router.get('/:id', authenticateToken, (req, res) => {
 router.post('/', (req, res) => {
   try {
     const orders = getOrders();
-    const { items, total, customerName, customerEmail, customerPhone, notes } = req.body;
+    const { 
+      items, 
+      total, 
+      subtotal,
+      shippingCost,
+      customerName, 
+      customerEmail, 
+      customerPhone, 
+      shippingAddress,
+      shippingService,
+      notes 
+    } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Order items required' });
     }
 
+    // Calculate totals
+    const itemsTotal = items.reduce((sum, item) => sum + item.price, 0);
+    const shipping = parseFloat(shippingCost) || 0;
+    const orderTotal = parseFloat(total) || (itemsTotal + shipping);
+
     const newOrder = {
       id: uuidv4(),
-      orderNumber: `BG-${Date.now().toString(36).toUpperCase()}`,
+      orderNumber: `GG-${Date.now().toString(36).toUpperCase()}`,
       items,
-      total: parseFloat(total) || items.reduce((sum, item) => sum + item.price, 0),
+      subtotal: parseFloat(subtotal) || itemsTotal,
+      shippingCost: shipping,
+      total: orderTotal,
       customerName: customerName || 'Customer',
       customerEmail: customerEmail || '',
       customerPhone: customerPhone || '',
+      shippingAddress: shippingAddress || null,
+      shippingService: shippingService || null,
+      shipmentId: null,
+      trackingNumber: null,
       notes: notes || '',
       status: 'pending',
       paymentStatus: 'unpaid',
@@ -71,6 +93,8 @@ router.post('/', (req, res) => {
 
     orders.push(newOrder);
     saveOrders(orders);
+
+    console.log('Order created:', newOrder.orderNumber, '- Total:', `R${orderTotal}`, '(incl. R${shipping} shipping)');
 
     res.status(201).json(newOrder);
   } catch (error) {

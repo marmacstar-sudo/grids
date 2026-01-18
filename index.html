@@ -174,12 +174,102 @@
     <div id="cart-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeCart()">&times;</span>
-            <h2>Your Cart</h2>
-            <div id="cart-items"></div>
-            <div class="cart-total">
-                <h3>Total: <span id="cart-total-amount">R 0</span></h3>
+            
+            <!-- Step 1: Cart Items -->
+            <div id="cart-step-1">
+                <h2>Your Cart</h2>
+                <div id="cart-items"></div>
+                <div class="cart-total">
+                    <h3>Subtotal: <span id="cart-total-amount">R 0</span></h3>
+                </div>
+                <button class="checkout-btn" onclick="showShippingStep()">Continue to Shipping</button>
             </div>
-            <button class="checkout-btn" onclick="checkout()">Pay with Card</button>
+            
+            <!-- Step 2: Shipping Details -->
+            <div id="cart-step-2" style="display: none;">
+                <h2>🚚 Shipping Details</h2>
+                <button class="back-btn" onclick="showCartStep(1)">← Back to Cart</button>
+                
+                <form id="shipping-form" class="shipping-form">
+                    <div class="form-group">
+                        <label for="ship-name">Full Name *</label>
+                        <input type="text" id="ship-name" placeholder="Your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ship-email">Email *</label>
+                        <input type="email" id="ship-email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ship-phone">Phone *</label>
+                        <input type="tel" id="ship-phone" placeholder="+27 XX XXX XXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ship-street">Street Address *</label>
+                        <input type="text" id="ship-street" placeholder="123 Main Road" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ship-suburb">Suburb</label>
+                            <input type="text" id="ship-suburb" placeholder="Suburb">
+                        </div>
+                        <div class="form-group">
+                            <label for="ship-city">City *</label>
+                            <input type="text" id="ship-city" placeholder="City" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ship-postal">Postal Code *</label>
+                            <input type="text" id="ship-postal" placeholder="0000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ship-province">Province *</label>
+                            <select id="ship-province" required>
+                                <option value="">Select Province</option>
+                                <option value="GP">Gauteng</option>
+                                <option value="WC">Western Cape</option>
+                                <option value="KZN">KwaZulu-Natal</option>
+                                <option value="EC">Eastern Cape</option>
+                                <option value="FS">Free State</option>
+                                <option value="MP">Mpumalanga</option>
+                                <option value="LP">Limpopo</option>
+                                <option value="NW">North West</option>
+                                <option value="NC">Northern Cape</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                
+                <button class="checkout-btn" onclick="getShippingQuote()">Get Shipping Quote</button>
+            </div>
+            
+            <!-- Step 3: Shipping Options & Payment -->
+            <div id="cart-step-3" style="display: none;">
+                <h2>📦 Choose Shipping</h2>
+                <button class="back-btn" onclick="showCartStep(2)">← Back to Address</button>
+                
+                <div id="shipping-options" class="shipping-options">
+                    <!-- Shipping options loaded dynamically -->
+                </div>
+                
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="summary-subtotal">R 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping:</span>
+                        <span id="summary-shipping">R 0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="summary-total">R 0</span>
+                    </div>
+                </div>
+                
+                <button class="checkout-btn" id="pay-btn" onclick="checkout()" disabled>Select Shipping to Continue</button>
+            </div>
         </div>
     </div>
 

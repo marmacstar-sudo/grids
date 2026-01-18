@@ -101,6 +101,10 @@ if (mobileMenuToggle) {
 
 // Shopping Cart
 let cart = [];
+let selectedShipping = null;
+let shippingRates = [];
+let shippingAddress = null;
+let shippingContact = null;
 
 // Add to Cart
 function addToCart(name, price, image) {
@@ -212,6 +216,10 @@ function showCart() {
     const modal = document.getElementById('cart-modal');
     const cartItems = document.getElementById('cart-items');
 
+    // Reset to step 1
+    showCartStep(1);
+    selectedShipping = null;
+    
     if (cart.length === 0) {
         cartItems.innerHTML = `
             <div class="empty-cart">
@@ -234,6 +242,140 @@ function showCart() {
 
     updateCartTotal();
     modal.style.display = 'block';
+}
+
+// Show specific cart step
+function showCartStep(step) {
+    document.getElementById('cart-step-1').style.display = step === 1 ? 'block' : 'none';
+    document.getElementById('cart-step-2').style.display = step === 2 ? 'block' : 'none';
+    document.getElementById('cart-step-3').style.display = step === 3 ? 'block' : 'none';
+}
+
+// Continue to shipping step
+function showShippingStep() {
+    if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+    showCartStep(2);
+}
+
+// Get shipping quote from The Courier Guy
+async function getShippingQuote() {
+    const form = document.getElementById('shipping-form');
+    
+    // Validate form
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    // Collect form data
+    shippingContact = {
+        name: document.getElementById('ship-name').value,
+        email: document.getElementById('ship-email').value,
+        phone: document.getElementById('ship-phone').value
+    };
+    
+    shippingAddress = {
+        streetAddress: document.getElementById('ship-street').value,
+        suburb: document.getElementById('ship-suburb').value,
+        city: document.getElementById('ship-city').value,
+        postalCode: document.getElementById('ship-postal').value,
+        province: document.getElementById('ship-province').value
+    };
+
+    // Show loading state
+    showCartStep(3);
+    const optionsContainer = document.getElementById('shipping-options');
+    optionsContainer.innerHTML = `
+        <div class="shipping-loading">
+            <i class="fas fa-spinner"></i>
+            <p>Getting shipping quotes...</p>
+        </div>
+    `;
+    
+    // Update summary with subtotal
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    document.getElementById('summary-subtotal').textContent = `R ${subtotal}`;
+    document.getElementById('summary-shipping').textContent = 'Calculating...';
+    document.getElementById('summary-total').textContent = `R ${subtotal}`;
+
+    try {
+        const response = await fetch(`${API_BASE}/shipping/quote`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ...shippingAddress,
+                itemCount: cart.length
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get shipping quote');
+        }
+
+        const data = await response.json();
+        shippingRates = data.rates || [];
+
+        if (shippingRates.length === 0) {
+            optionsContainer.innerHTML = `
+                <div class="shipping-loading">
+                    <p>😔 Sorry, we couldn't find shipping options for your area.</p>
+                    <p>Please contact us at <a href="tel:+27674077001">+27 67 407 7001</a></p>
+                </div>
+            `;
+            return;
+        }
+
+        // Render shipping options
+        optionsContainer.innerHTML = shippingRates.map((rate, index) => `
+            <label class="shipping-option" onclick="selectShipping(${index})">
+                <input type="radio" name="shipping" value="${index}" ${index === 0 ? 'checked' : ''}>
+                <div class="shipping-option-info">
+                    <div class="shipping-option-name">${rate.serviceName}</div>
+                    <div class="shipping-option-desc">${rate.description || `Est. delivery: ${rate.estimatedDelivery}`}</div>
+                </div>
+                <div class="shipping-option-price">R ${rate.price.toFixed(2)}</div>
+            </label>
+        `).join('');
+
+        // Auto-select first option
+        selectShipping(0);
+
+    } catch (error) {
+        console.error('Shipping quote error:', error);
+        optionsContainer.innerHTML = `
+            <div class="shipping-loading">
+                <p>😔 Couldn't get shipping quotes. Please try again.</p>
+                <button class="checkout-btn" onclick="getShippingQuote()" style="margin-top: 15px;">Retry</button>
+            </div>
+        `;
+    }
+}
+
+// Select shipping option
+function selectShipping(index) {
+    selectedShipping = shippingRates[index];
+    
+    // Update UI
+    document.querySelectorAll('.shipping-option').forEach((el, i) => {
+        el.classList.toggle('selected', i === index);
+        el.querySelector('input').checked = i === index;
+    });
+
+    // Update summary
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const shippingCost = selectedShipping.price;
+    const total = subtotal + shippingCost;
+
+    document.getElementById('summary-shipping').textContent = `R ${shippingCost.toFixed(2)}`;
+    document.getElementById('summary-total').textContent = `R ${total.toFixed(2)}`;
+
+    // Enable pay button
+    const payBtn = document.getElementById('pay-btn');
+    payBtn.disabled = false;
+    payBtn.textContent = `Pay R ${total.toFixed(2)}`;
 }
 
 // Update Cart Total
@@ -264,8 +406,17 @@ async function checkout() {
         return;
     }
 
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    const checkoutBtn = document.querySelector('.checkout-btn');
+    if (!selectedShipping || !shippingAddress || !shippingContact) {
+        alert('Please complete shipping details first');
+        showCartStep(2);
+        return;
+    }
+
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const shippingCost = selectedShipping.price;
+    const total = subtotal + shippingCost;
+    
+    const checkoutBtn = document.getElementById('pay-btn');
 
     // Update button to show loading state
     const originalText = checkoutBtn.textContent;
@@ -273,14 +424,25 @@ async function checkout() {
     checkoutBtn.disabled = true;
 
     try {
-        // 1. Create order
+        // 1. Create order with shipping details
         const orderResponse = await fetch(`${API_BASE}/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 items: cart,
+                subtotal: subtotal,
+                shippingCost: shippingCost,
                 total: total,
-                customerName: 'Customer'
+                customerName: shippingContact.name,
+                customerEmail: shippingContact.email,
+                customerPhone: shippingContact.phone,
+                shippingAddress: shippingAddress,
+                shippingService: {
+                    code: selectedShipping.serviceCode,
+                    name: selectedShipping.serviceName,
+                    price: selectedShipping.price,
+                    estimatedDelivery: selectedShipping.estimatedDelivery
+                }
             })
         });
 

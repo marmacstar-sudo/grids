@@ -521,6 +521,7 @@ async function loadOrders() {
                         <th>Order #</th>
                         <th>Customer</th>
                         <th>Items</th>
+                        <th>Shipping</th>
                         <th>Total</th>
                         <th>Status</th>
                         <th>Date</th>
@@ -528,22 +529,31 @@ async function loadOrders() {
                     </tr>
                 </thead>
                 <tbody>
-                    ${orders.map(order => `
-                        <tr>
-                            <td><strong>${order.orderNumber}</strong></td>
-                            <td>${order.customerName}</td>
-                            <td>${order.items.length} item(s)</td>
-                            <td>R ${order.total}</td>
-                            <td><span class="status-badge ${order.status}">${order.status}</span></td>
-                            <td>${new Date(order.createdAt).toLocaleDateString()}</td>
-                            <td>
-                                <button class="primary-btn" style="padding: 6px 12px; font-size: 0.8rem;"
-                                        onclick="viewOrder('${order.id}')">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('')}
+                    ${orders.map(order => {
+                        // Shipping status display
+                        let shippingDisplay = '<span style="color: #999;">-</span>';
+                        if (order.trackingNumber) {
+                            shippingDisplay = '<span class="status-badge shipped" title="' + order.trackingNumber + '">🚚 Tracked</span>';
+                        } else if (order.shippingService) {
+                            shippingDisplay = '<span class="status-badge pending">' + (order.shippingService.name?.split(' ')[0] || 'Pending') + '</span>';
+                        } else if (order.shippingAddress) {
+                            shippingDisplay = '<span class="status-badge pending">📍 Address</span>';
+                        }
+                        return '<tr>' +
+                            '<td><strong>' + order.orderNumber + '</strong></td>' +
+                            '<td>' + order.customerName + '</td>' +
+                            '<td>' + order.items.length + ' item(s)</td>' +
+                            '<td>' + shippingDisplay + '</td>' +
+                            '<td>R ' + (order.total?.toFixed ? order.total.toFixed(2) : order.total) + '</td>' +
+                            '<td><span class="status-badge ' + order.status + '">' + order.status + '</span></td>' +
+                            '<td>' + new Date(order.createdAt).toLocaleDateString() + '</td>' +
+                            '<td>' +
+                                '<button class="primary-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="viewOrder(\\'' + order.id + '\\')">' +
+                                    '<i class="fas fa-eye"></i> View' +
+                                '</button>' +
+                            '</td>' +
+                        '</tr>';
+                    }).join('')}
                 </tbody>
             </table>
         `;
@@ -562,17 +572,60 @@ async function viewOrder(id) {
         const modal = document.getElementById('order-modal');
         const content = document.getElementById('order-detail-content');
 
+        // Build shipping address display
+        const shippingAddr = order.shippingAddress;
+        const shippingAddrHtml = shippingAddr ? `
+            <p>${shippingAddr.streetAddress}</p>
+            <p>${shippingAddr.suburb ? shippingAddr.suburb + ', ' : ''}${shippingAddr.city}</p>
+            <p>${shippingAddr.postalCode}, ${shippingAddr.province || ''}</p>
+        ` : '<p class="text-muted">No shipping address</p>';
+
+        // Build shipping service display
+        const shippingService = order.shippingService;
+        const shippingServiceHtml = shippingService ? `
+            <p><strong>Service:</strong> ${shippingService.name}</p>
+            <p><strong>Cost:</strong> R ${shippingService.price?.toFixed(2) || '0.00'}</p>
+            <p><strong>Est. Delivery:</strong> ${shippingService.estimatedDelivery || 'TBC'}</p>
+        ` : '<p class="text-muted">No shipping service selected</p>';
+
+        // Tracking info
+        const trackingHtml = order.trackingNumber ? `
+            <div class="tracking-info" style="background: #e8f5e9; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <p><strong>🚚 Tracking Number:</strong> ${order.trackingNumber}</p>
+                ${order.shipmentId ? `<p><strong>Shipment ID:</strong> ${order.shipmentId}</p>` : ''}
+            </div>
+        ` : '';
+
         content.innerHTML = `
-            <div class="order-info">
-                <p><strong>Order Number:</strong> ${order.orderNumber}</p>
-                <p><strong>Customer:</strong> ${order.customerName}</p>
-                <p><strong>Email:</strong> ${order.customerEmail || 'N/A'}</p>
-                <p><strong>Phone:</strong> ${order.customerPhone || 'N/A'}</p>
-                <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</p>
-                <p><strong>Notes:</strong> ${order.notes || 'None'}</p>
+            <div class="order-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="order-info">
+                    <h4 style="margin-bottom: 10px;">📋 Order Info</h4>
+                    <p><strong>Order Number:</strong> ${order.orderNumber}</p>
+                    <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</p>
+                    <p><strong>Status:</strong> <span class="status-badge ${order.status}">${order.status}</span></p>
+                    <p><strong>Payment:</strong> <span class="status-badge ${order.paymentStatus}">${order.paymentStatus}</span></p>
+                </div>
+                <div class="customer-info">
+                    <h4 style="margin-bottom: 10px;">👤 Customer</h4>
+                    <p><strong>Name:</strong> ${order.customerName}</p>
+                    <p><strong>Email:</strong> ${order.customerEmail || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${order.customerPhone || 'N/A'}</p>
+                </div>
             </div>
 
-            <h4>Items</h4>
+            <div class="order-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <div class="shipping-address">
+                    <h4 style="margin-bottom: 10px;">📍 Shipping Address</h4>
+                    ${shippingAddrHtml}
+                </div>
+                <div class="shipping-service">
+                    <h4 style="margin-bottom: 10px;">🚚 Shipping Service</h4>
+                    ${shippingServiceHtml}
+                    ${trackingHtml}
+                </div>
+            </div>
+
+            <h4 style="margin-top: 20px; margin-bottom: 10px;">🛒 Items</h4>
             <div class="order-items-list">
                 ${order.items.map(item => `
                     <div class="order-item">
@@ -580,13 +633,23 @@ async function viewOrder(id) {
                         <span>R ${item.price}</span>
                     </div>
                 `).join('')}
-                <div class="order-item" style="font-weight: bold; border-top: 2px solid var(--gray-300); margin-top: 10px; padding-top: 15px;">
+                <div class="order-item" style="color: var(--gray-500); border-top: 1px solid var(--gray-200); margin-top: 10px; padding-top: 10px;">
+                    <span>Subtotal</span>
+                    <span>R ${order.subtotal || order.items.reduce((sum, i) => sum + i.price, 0)}</span>
+                </div>
+                <div class="order-item" style="color: var(--gray-500);">
+                    <span>Shipping</span>
+                    <span>R ${order.shippingCost?.toFixed(2) || '0.00'}</span>
+                </div>
+                <div class="order-item" style="font-weight: bold; border-top: 2px solid var(--primary); margin-top: 10px; padding-top: 15px; font-size: 1.1em;">
                     <span>Total</span>
-                    <span>R ${order.total}</span>
+                    <span>R ${order.total?.toFixed(2) || order.total}</span>
                 </div>
             </div>
 
-            <div class="order-status-update">
+            ${order.notes ? `<p style="margin-top: 15px;"><strong>Notes:</strong> ${order.notes}</p>` : ''}
+
+            <div class="order-status-update" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--gray-200);">
                 <select id="order-status-select">
                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
                     <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
