@@ -260,10 +260,10 @@ function showShippingStep() {
     showCartStep(2);
 }
 
-// Get shipping quote from The Courier Guy
+// Flat rate shipping
 async function getShippingQuote() {
     const form = document.getElementById('shipping-form');
-    
+
     // Validate form
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -276,7 +276,7 @@ async function getShippingQuote() {
         email: document.getElementById('ship-email').value,
         phone: document.getElementById('ship-phone').value
     };
-    
+
     shippingAddress = {
         streetAddress: document.getElementById('ship-street').value,
         suburb: document.getElementById('ship-suburb').value,
@@ -285,73 +285,31 @@ async function getShippingQuote() {
         province: document.getElementById('ship-province').value
     };
 
-    // Show loading state
     showCartStep(3);
+
+    // Flat rate shipping
+    const flatRate = 199;
+    shippingRates = [{
+        serviceCode: 'FLAT',
+        serviceName: 'Standard Shipping',
+        description: 'Nationwide delivery',
+        price: flatRate,
+        estimatedDelivery: '3-5 business days'
+    }];
+
     const optionsContainer = document.getElementById('shipping-options');
     optionsContainer.innerHTML = `
-        <div class="shipping-loading">
-            <i class="fas fa-spinner"></i>
-            <p>Getting shipping quotes...</p>
-        </div>
-    `;
-    
-    // Update summary with subtotal
-    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-    document.getElementById('summary-subtotal').textContent = `R ${subtotal}`;
-    document.getElementById('summary-shipping').textContent = 'Calculating...';
-    document.getElementById('summary-total').textContent = `R ${subtotal}`;
-
-    try {
-        const response = await fetch(`${API_BASE}/shipping/quote`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                ...shippingAddress,
-                itemCount: cart.length
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to get shipping quote');
-        }
-
-        const data = await response.json();
-        shippingRates = data.rates || [];
-
-        if (shippingRates.length === 0) {
-            optionsContainer.innerHTML = `
-                <div class="shipping-loading">
-                    <p>😔 Sorry, we couldn't find shipping options for your area.</p>
-                    <p>Please contact us at <a href="tel:+27674077001">+27 67 407 7001</a></p>
-                </div>
-            `;
-            return;
-        }
-
-        // Render shipping options
-        optionsContainer.innerHTML = shippingRates.map((rate, index) => `
-            <label class="shipping-option" onclick="selectShipping(${index})">
-                <input type="radio" name="shipping" value="${index}" ${index === 0 ? 'checked' : ''}>
-                <div class="shipping-option-info">
-                    <div class="shipping-option-name">${rate.serviceName}</div>
-                    <div class="shipping-option-desc">${rate.description || `Est. delivery: ${rate.estimatedDelivery}`}</div>
-                </div>
-                <div class="shipping-option-price">R ${rate.price.toFixed(2)}</div>
-            </label>
-        `).join('');
-
-        // Auto-select first option
-        selectShipping(0);
-
-    } catch (error) {
-        console.error('Shipping quote error:', error);
-        optionsContainer.innerHTML = `
-            <div class="shipping-loading">
-                <p>😔 Couldn't get shipping quotes. Please try again.</p>
-                <button class="checkout-btn" onclick="getShippingQuote()" style="margin-top: 15px;">Retry</button>
+        <label class="shipping-option selected" onclick="selectShipping(0)">
+            <input type="radio" name="shipping" value="0" checked>
+            <div class="shipping-option-info">
+                <div class="shipping-option-name">Standard Shipping</div>
+                <div class="shipping-option-desc">Nationwide delivery — 3-5 business days</div>
             </div>
-        `;
-    }
+            <div class="shipping-option-price">R ${flatRate.toFixed(2)}</div>
+        </label>
+    `;
+
+    selectShipping(0);
 }
 
 // Select shipping option
