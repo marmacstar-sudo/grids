@@ -548,7 +548,7 @@ async function loadOrders() {
                             '<td><span class="status-badge ' + order.status + '">' + order.status + '</span></td>' +
                             '<td>' + new Date(order.createdAt).toLocaleDateString() + '</td>' +
                             '<td>' +
-                                '<button class="primary-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="viewOrder(\\'' + order.id + '\\')">' +
+                                '<button class="primary-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="viewOrder(\'' + order.id + '\')">' +
                                     '<i class="fas fa-eye"></i> View' +
                                 '</button>' +
                             '</td>' +
